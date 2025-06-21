@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router";
+import ProfastLogo from "../ProfastLogo/ProfastLogo";
 
 
 const Navbar = () => {
@@ -34,7 +35,7 @@ const Navbar = () => {
             {navItems}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <ProfastLogo/>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
