@@ -6,11 +6,13 @@ import FeatureRows from '../Benefits/Benefits';
 import BeMerchant from '../BeMerchant/BeMerchant';
 import CustomersReviews from '../CustomersReviews/CustomersReviews';
 import FAQ from '../FAQ/FAQ';
+import HowItWorks from '../HowItWorks/HowItWorks';
 
 const Home = () => {
     return (
         <div>
             <Banner/>
+            <HowItWorks/>
             <OurServices/>
             <ClientLogos/>
             <FeatureRows/>
