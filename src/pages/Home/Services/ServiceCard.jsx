@@ -4,7 +4,7 @@ const ServiceCard = ({ service }) => {
   const { icon: Icon, title, description } = service;
 
   return (
-    <div className="card bg-base-100 shadow-md border transition duration-300 group hover:bg-[#CAEB66] hover:border-[#CAEB66]">
+    <div className="card bg-base-100 shadow-md transition duration-300 group hover:bg-[#CAEB66] hover:border-[#CAEB66]">
       <div className="card-body items-center text-center">
         <Icon className="text-4xl text-primary mb-4 transition-colors duration-300 group-hover:text-[#FFFF]" />
 
