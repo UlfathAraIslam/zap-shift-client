@@ -4,6 +4,7 @@ import OurServices from '../Services/Services';
 import ClientLogos from '../ClientLogos/ClientLogos';
 import FeatureRows from '../Benefits/Benefits';
 import BeMerchant from '../BeMerchant/BeMerchant';
+import CustomersReviews from '../CustomersReviews/CustomersReviews';
 
 const Home = () => {
     return (
@@ -13,6 +14,7 @@ const Home = () => {
             <ClientLogos/>
             <FeatureRows/>
             <BeMerchant/>
+            <CustomersReviews/>
         </div>
     );
 };

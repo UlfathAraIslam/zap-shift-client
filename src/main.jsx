@@ -10,6 +10,11 @@ import 'aos/dist/aos.css';
 import Aos from 'aos';
 Aos.init();
 
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <div className='font-urbanist max-w-7xl mx-auto'>
