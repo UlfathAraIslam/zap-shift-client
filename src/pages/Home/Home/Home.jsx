@@ -5,6 +5,7 @@ import ClientLogos from '../ClientLogos/ClientLogos';
 import FeatureRows from '../Benefits/Benefits';
 import BeMerchant from '../BeMerchant/BeMerchant';
 import CustomersReviews from '../CustomersReviews/CustomersReviews';
+import FAQ from '../FAQ/FAQ';
 
 const Home = () => {
     return (
@@ -15,6 +16,7 @@ const Home = () => {
             <FeatureRows/>
             <BeMerchant/>
             <CustomersReviews/>
+            <FAQ/>
         </div>
     );
 };

@@ -69,7 +69,7 @@ const CustomersReviews = () => {
       />
 
       {/* Section Title + Paragraph */}
-      <h2 className="text-3xl font-bold mb-2">What our customers are saying</h2>
+      <h2 className="text-3xl font-bold mb-2 text-primary">What our customers are saying</h2>
       <p className="text-gray-600 max-w-xl mx-auto mb-10">
         Enhance posture, mobility, and well-being effortlessly with Posture Pro. Achieve proper alignment, reduce pain, and strengthen your body with ease!
       </p>
