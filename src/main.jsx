@@ -13,12 +13,15 @@ Aos.init();
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import AuthProvider from './contexts/AuthContext/AuthProvider.jsx';
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <div className='font-urbanist max-w-7xl mx-auto'>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </div>
   </StrictMode>,
 )
