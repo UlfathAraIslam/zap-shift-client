@@ -1,39 +1,81 @@
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+
+/* ================= Warehouse Data ================= */
+const warehouses = [
+  { id: 1, region: "Dhaka", district: "Dhaka North", centerName: "Dhaka North Hub" },
+  { id: 2, region: "Dhaka", district: "Dhaka South", centerName: "Dhaka South Hub" },
+  { id: 3, region: "Chattogram", district: "Chattogram City", centerName: "Chattogram Hub" },
+  { id: 4, region: "Sylhet", district: "Sylhet City", centerName: "Sylhet Hub" },
+];
+
+const regions = [...new Set(warehouses.map(w => w.region))];
 
 const SendParcel = ({ user }) => {
-  const { register, handleSubmit, watch} = useForm();
+  const { register, handleSubmit, watch, reset } = useForm();
+
   const parcelType = watch("type");
   const weight = watch("weight") || 0;
+  const senderRegion = watch("senderRegion");
+  const receiverRegion = watch("receiverRegion");
 
   const calculateCost = (data) => {
     let base = data.type === "document" ? 100 : 150;
     let weightCost = data.type === "non-document" ? weight * 20 : 0;
-    let centerCost = 50; // mock service center cost
-    return base + weightCost + centerCost;
+    return base + weightCost + 50;
   };
 
   const onSubmit = (data) => {
-    console.log(data);
     const cost = calculateCost(data);
-    console.log(cost);
+
+    toast((t) => (
+      <div className="space-y-3">
+        <p className="font-semibold">
+          Delivery Cost: <span className="text-primary">৳{cost}</span>
+        </p>
+        <div className="flex gap-2">
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              console.log({
+                ...data,
+                cost,
+                creation_date: new Date().toISOString(),
+              });
+              toast.dismiss(t.id);
+              toast.success("Parcel added successfully");
+              reset();
+            }}
+          >
+            Confirm
+          </button>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ));
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      {/* Heading */}
-      <h2 className="text-3xl font-bold text-center">Send Parcel</h2>
-      <p className="text-gray-500 mb-6 text-center">
+    <div className="max-w-6xl mx-auto p-6">
+      <h2 className="text-3xl font-bold">Add Parcel</h2>
+      <p className="text-gray-500 mb-6">
         Door to Door delivery requires both pickup and delivery information
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        {/* Parcel Info */}
+
+        {/* ================= Parcel Info ================= */}
         <div className="card bg-base-100 shadow p-6">
           <h3 className="text-xl font-semibold mb-4">Parcel Info</h3>
 
           <div className="grid md:grid-cols-3 gap-4">
             <select
-              className="select select-bordered w-full"
+              className="select select-bordered"
               {...register("type", { required: true })}
             >
               <option value="">Select Type</option>
@@ -43,111 +85,140 @@ const SendParcel = ({ user }) => {
 
             <input
               type="text"
-              placeholder="Parcel Title"
-              className="input input-bordered w-full"
-              {...register("title", { required: true })}
+              placeholder="Describe your parcel"
+              className="input input-bordered"
+              {...register("parcelName", { required: true })}
             />
 
             {parcelType === "non-document" && (
               <input
                 type="number"
                 placeholder="Weight (kg)"
-                className="input input-bordered w-full"
+                className="input input-bordered"
                 {...register("weight")}
               />
             )}
           </div>
         </div>
 
-        {/* Sender Info */}
-        <div className="card bg-base-100 shadow p-6">
-          <h3 className="text-xl font-semibold mb-4">Sender Info</h3>
+        {/* ================= Sender & Receiver ================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              defaultValue={user?.name}
-              className="input input-bordered"
-              {...register("senderName", { required: true })}
-            />
-            <input
-              type="text"
-              placeholder="Contact Number"
-              className="input input-bordered"
-              {...register("senderContact", { required: true })}
-            />
-            <select
-              className="select select-bordered"
-              {...register("senderRegion", { required: true })}
-            >
-              <option value="">Select Region</option>
-              <option value="dhaka">Dhaka</option>
-              <option value="chattogram">Chattogram</option>
-            </select>
-            <select
-              className="select select-bordered"
-              {...register("senderCenter", { required: true })}
-            >
-              <option value="">Select Service Center</option>
-              <option value="center-a">Center A</option>
-              <option value="center-b">Center B</option>
-            </select>
-            <textarea
-              placeholder="Pickup Address"
-              className="textarea textarea-bordered md:col-span-2"
-              {...register("senderAddress", { required: true })}
-            />
-            <textarea
-              placeholder="Pickup Instruction"
-              className="textarea textarea-bordered md:col-span-2"
-              {...register("pickupInstruction", { required: true })}
-            />
+          {/* -------- Sender Info -------- */}
+          <div className="card bg-base-100 shadow p-6">
+            <h3 className="text-xl font-semibold mb-4">Sender Info</h3>
+
+            <div className="space-y-4">
+              <input
+                placeholder="Sender Name"
+                type="text"
+                defaultValue={user?.name}
+                className="input input-bordered w-full"
+                {...register("senderName", { required: true })}
+              />
+
+              <input
+                type="text"
+                placeholder="Contact Number"
+                className="input input-bordered w-full"
+                {...register("senderContact", { required: true })}
+              />
+
+              <select
+                className="select select-bordered w-full"
+                {...register("senderRegion", { required: true })}
+              >
+                <option value="">Select Region</option>
+                {regions.map(r => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+
+              <select
+                className="select select-bordered w-full"
+                {...register("senderCenter", { required: true })}
+                disabled={!senderRegion}
+              >
+                <option value="">Select Service Center (District)</option>
+                {warehouses
+                  .filter(w => w.region === senderRegion)
+                  .map(w => (
+                    <option key={w.id} value={w.centerName}>
+                      {w.district}
+                    </option>
+                  ))}
+              </select>
+
+              <textarea
+                placeholder="Pickup Address"
+                className="textarea textarea-bordered w-full"
+                {...register("senderAddress", { required: true })}
+              />
+
+              <textarea
+                placeholder="Pickup Instruction"
+                className="textarea textarea-bordered w-full"
+                {...register("pickupInstruction", { required: true })}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Receiver Info */}
-        <div className="card bg-base-100 shadow p-6">
-          <h3 className="text-xl font-semibold mb-4">Receiver Info</h3>
+          {/* -------- Receiver Info -------- */}
+          <div className="card bg-base-100 shadow p-6">
+            <h3 className="text-xl font-semibold mb-4">Receiver Info</h3>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Receiver Name"
-              className="input input-bordered"
-              {...register("receiverName", { required: true })}
-            />
-            <input
-              type="text"
-              placeholder="Contact Number"
-              className="input input-bordered"
-              {...register("receiverContact", { required: true })}
-            />
-            <select
-              className="select select-bordered"
-              {...register("receiverRegion", { required: true })}
-            >
-              <option value="">Select Region</option>
-              <option value="dhaka">Dhaka</option>
-              <option value="chattogram">Chattogram</option>
-            </select>
-            <select
-              className="select select-bordered"
-              {...register("receiverCenter", { required: true })}
-            >
-              <option value="">Select Service Center</option>
-              <option value="center-a">Center A</option>
-              <option value="center-b">Center B</option>
-            </select>
-            <textarea
-              placeholder="Delivery Address"
-              className="textarea textarea-bordered md:col-span-2"
-              {...register("receiverAddress", { required: true })}
-            />
-            <textarea
-              placeholder="Delivery Instruction"
-              className="textarea textarea-bordered md:col-span-2"
-              {...register("deliveryInstruction", { required: true })}
-            />
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Receiver Name"
+                className="input input-bordered w-full"
+                {...register("receiverName", { required: true })}
+              />
+
+              <input
+                type="text"
+                placeholder="Contact Number"
+                className="input input-bordered w-full"
+                {...register("receiverContact", { required: true })}
+              />
+
+              <select
+                className="select select-bordered w-full"
+                {...register("receiverRegion", { required: true })}
+              >
+                <option value="">Select Region</option>
+                {regions.map(r => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+
+              <select
+                className="select select-bordered w-full"
+                {...register("receiverCenter", { required: true })}
+                disabled={!receiverRegion}
+              >
+                <option value="">Select Service Center (District)</option>
+                {warehouses
+                  .filter(w => w.region === receiverRegion)
+                  .map(w => (
+                    <option key={w.id} value={w.centerName}>
+                      {w.district}
+                    </option>
+                  ))}
+              </select>
+
+              <textarea
+                placeholder="Delivery Address"
+                className="textarea textarea-bordered w-full"
+                {...register("receiverAddress", { required: true })}
+              />
+
+              <textarea
+                placeholder="Delivery Instruction"
+                className="textarea textarea-bordered w-full"
+                {...register("deliveryInstruction", { required: true })}
+              />
+            </div>
           </div>
         </div>
 
