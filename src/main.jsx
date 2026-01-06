@@ -14,12 +14,14 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import AuthProvider from './contexts/AuthContext/AuthProvider.jsx';
+import { Toaster } from "react-hot-toast";
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <div className='font-urbanist max-w-7xl mx-auto'>
       <AuthProvider>
+        <Toaster position="top-right" />
         <RouterProvider router={router} />
       </AuthProvider>
     </div>

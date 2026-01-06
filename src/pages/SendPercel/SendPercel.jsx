@@ -3,13 +3,33 @@ import toast from "react-hot-toast";
 
 /* ================= Warehouse Data ================= */
 const warehouses = [
-  { id: 1, region: "Dhaka", district: "Dhaka North", centerName: "Dhaka North Hub" },
-  { id: 2, region: "Dhaka", district: "Dhaka South", centerName: "Dhaka South Hub" },
-  { id: 3, region: "Chattogram", district: "Chattogram City", centerName: "Chattogram Hub" },
-  { id: 4, region: "Sylhet", district: "Sylhet City", centerName: "Sylhet Hub" },
+  {
+    id: 1,
+    region: "Dhaka",
+    district: "Dhaka North",
+    centerName: "Dhaka North Hub",
+  },
+  {
+    id: 2,
+    region: "Dhaka",
+    district: "Dhaka South",
+    centerName: "Dhaka South Hub",
+  },
+  {
+    id: 3,
+    region: "Chattogram",
+    district: "Chattogram City",
+    centerName: "Chattogram Hub",
+  },
+  {
+    id: 4,
+    region: "Sylhet",
+    district: "Sylhet City",
+    centerName: "Sylhet Hub",
+  },
 ];
 
-const regions = [...new Set(warehouses.map(w => w.region))];
+const regions = [...new Set(warehouses.map((w) => w.region))];
 
 const SendParcel = ({ user }) => {
   const { register, handleSubmit, watch, reset } = useForm();
@@ -27,8 +47,9 @@ const SendParcel = ({ user }) => {
 
   const onSubmit = (data) => {
     const cost = calculateCost(data);
+    console.log(data);
 
-    toast((t) => (
+    toast.custom((t) => (
       <div className="space-y-3">
         <p className="font-semibold">
           Delivery Cost: <span className="text-primary">৳{cost}</span>
@@ -68,12 +89,12 @@ const SendParcel = ({ user }) => {
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-
         {/* ================= Parcel Info ================= */}
         <div className="card bg-base-100 shadow p-6">
           <h3 className="text-xl font-semibold mb-4">Parcel Info</h3>
 
           <div className="grid md:grid-cols-3 gap-4">
+            {/* Parcel Type */}
             <select
               className="select select-bordered"
               {...register("type", { required: true })}
@@ -83,6 +104,7 @@ const SendParcel = ({ user }) => {
               <option value="non-document">Non-Document</option>
             </select>
 
+            {/* Parcel Name */}
             <input
               type="text"
               placeholder="Describe your parcel"
@@ -90,20 +112,30 @@ const SendParcel = ({ user }) => {
               {...register("parcelName", { required: true })}
             />
 
-            {parcelType === "non-document" && (
-              <input
-                type="number"
-                placeholder="Weight (kg)"
-                className="input input-bordered"
-                {...register("weight")}
-              />
-            )}
+            {/* Parcel Weight */}
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              placeholder="Weight (kg)"
+              className="input input-bordered"
+              disabled={parcelType === "document"}
+              {...register("weight", {
+                required: parcelType === "non-document",
+                valueAsNumber: true,
+              })}
+            />
           </div>
+
+          {parcelType === "document" && (
+            <p className="text-sm text-gray-500 mt-2">
+              Weight is not required for documents
+            </p>
+          )}
         </div>
 
         {/* ================= Sender & Receiver ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
           {/* -------- Sender Info -------- */}
           <div className="card bg-base-100 shadow p-6">
             <h3 className="text-xl font-semibold mb-4">Sender Info</h3>
@@ -129,8 +161,10 @@ const SendParcel = ({ user }) => {
                 {...register("senderRegion", { required: true })}
               >
                 <option value="">Select Region</option>
-                {regions.map(r => (
-                  <option key={r} value={r}>{r}</option>
+                {regions.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
                 ))}
               </select>
 
@@ -141,8 +175,8 @@ const SendParcel = ({ user }) => {
               >
                 <option value="">Select Service Center (District)</option>
                 {warehouses
-                  .filter(w => w.region === senderRegion)
-                  .map(w => (
+                  .filter((w) => w.region === senderRegion)
+                  .map((w) => (
                     <option key={w.id} value={w.centerName}>
                       {w.district}
                     </option>
@@ -187,8 +221,10 @@ const SendParcel = ({ user }) => {
                 {...register("receiverRegion", { required: true })}
               >
                 <option value="">Select Region</option>
-                {regions.map(r => (
-                  <option key={r} value={r}>{r}</option>
+                {regions.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
                 ))}
               </select>
 
@@ -199,8 +235,8 @@ const SendParcel = ({ user }) => {
               >
                 <option value="">Select Service Center (District)</option>
                 {warehouses
-                  .filter(w => w.region === receiverRegion)
-                  .map(w => (
+                  .filter((w) => w.region === receiverRegion)
+                  .map((w) => (
                     <option key={w.id} value={w.centerName}>
                       {w.district}
                     </option>
