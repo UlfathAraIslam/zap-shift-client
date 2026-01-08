@@ -18,14 +18,22 @@ export const router = createBrowserRouter([
         Component: Home,
       },
       {
-        path: 'coverage',
+        path: "coverage",
         Component: Coverage,
-        loader: () => fetch('./serviceCenter.json')
+        loader: () => fetch("./serviceCenter.json"),
       },
       {
-        path:'sendPercel',
-        element: <PrivateRoute><SendPercel></SendPercel></PrivateRoute>
-      }
+        path: "sendPercel",
+        element: (
+          <PrivateRoute>
+            <SendPercel></SendPercel>
+          </PrivateRoute>
+        ),
+        loader: async () => {
+          const res = await fetch("/serviceCenter.json");
+          return res.json();
+        },
+      },
     ],
   },
   {
