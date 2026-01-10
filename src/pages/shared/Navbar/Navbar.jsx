@@ -1,20 +1,41 @@
 import React from "react";
 import { Link, NavLink } from "react-router";
 import ProfastLogo from "../ProfastLogo/ProfastLogo";
-
+import useAuth from "../../../hooks/useAuth";
 
 const Navbar = () => {
-    const navItems = <>
-    <li><NavLink to="/">Home</NavLink></li>
-    <li><NavLink to="/sendPercel">Send A Percel</NavLink></li>
-    <li><NavLink to="/coverage">Coverage</NavLink></li>
-    <li><NavLink to="/about">About Us</NavLink></li>
+  const { user } = useAuth();
+  const navItems = (
+    <>
+      <li>
+        <NavLink to="/">Home</NavLink>
+      </li>
+      <li>
+        <NavLink to="/sendPercel">Send A Percel</NavLink>
+      </li>
+      <li>
+        <NavLink to="/coverage">Coverage</NavLink>
+      </li>
+
+      {user && (
+        <>
+          <li>
+            <NavLink to="/dashboard">Dashboard</NavLink>
+          </li>
+        </>
+      )}
+
+      <li>
+        <NavLink to="/about">About Us</NavLink>
+      </li>
     </>
+  );
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="navbar-start">
         <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden"><svg
+          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
               fill="none"
@@ -37,15 +58,15 @@ const Navbar = () => {
             {navItems}
           </ul>
         </div>
-        <ProfastLogo/>
+        <ProfastLogo />
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          {navItems}
-        </ul>
+        <ul className="menu menu-horizontal px-1">{navItems}</ul>
       </div>
       <div className="navbar-end">
-        <Link to='/login' className="btn btn-primary text-black">Login</Link>
+        <Link to="/login" className="btn btn-primary text-black">
+          Login
+        </Link>
       </div>
     </div>
   );
