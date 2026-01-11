@@ -1,29 +1,31 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import {
-  RouterProvider,
-} from "react-router";
-import { router } from './router/router.jsx';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import { RouterProvider } from "react-router";
+import { router } from "./router/router.jsx";
 
-import 'aos/dist/aos.css';
-import Aos from 'aos';
-Aos.init();
+import "aos/dist/aos.css";
+import Aos from "aos";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import AuthProvider from './contexts/AuthContext/AuthProvider.jsx';
+import AuthProvider from "./contexts/AuthContext/AuthProvider.jsx";
 import { Toaster } from "react-hot-toast";
 
+Aos.init();
+const queryClient = new QueryClient();
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <div className='font-urbanist max-w-7xl mx-auto'>
-      <AuthProvider>
-        <Toaster position="top-right" />
-        <RouterProvider router={router} />
-      </AuthProvider>
+    <div className="font-urbanist max-w-7xl mx-auto">
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Toaster position="top-right" />
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </QueryClientProvider>
     </div>
-  </StrictMode>,
-)
+  </StrictMode>
+);
