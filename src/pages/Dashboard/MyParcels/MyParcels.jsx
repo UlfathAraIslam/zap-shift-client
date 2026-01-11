@@ -3,10 +3,12 @@ import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useNavigate } from "react-router";
 
 const MyParcels = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   /* ================= Fetch Parcels ================= */
   const {
@@ -31,8 +33,11 @@ const MyParcels = () => {
     });
   };
 
-  /* ================= View ================= */
-  const handleView = (parcel) => {
+  /* ================= View (ID based) ================= */
+  const handleView = (id) => {
+    const parcel = parcels.find((p) => p._id === id);
+    if (!parcel) return;
+
     Swal.fire({
       title: "Parcel Details",
       html: `
@@ -47,38 +52,27 @@ const MyParcels = () => {
     });
   };
 
-  /* ================= Pay ================= */
-  const handlePay = async (parcel) => {
-    const result = await Swal.fire({
-      title: "Proceed to Payment?",
-      text: `Pay ৳${parcel.cost}`,
-      icon: "info",
-      showCancelButton: true,
-      confirmButtonText: "Pay Now",
-    });
-
-    if (result.isConfirmed) {
-      await axiosSecure.patch(`/parcels/pay/${parcel._id}`);
-      Swal.fire("Success", "Payment completed", "success");
-      refetch();
-    }
+  /* ================= Pay (ID based) ================= */
+  const handlePay = (id) => {
+    console.log("proceed to payment", id);
+    navigate(`/dashboard/payment/${id}`);
   };
 
-  /* ================= Delete ================= */
-  const handleDelete = async (parcel) => {
+  /* ================= Delete (ID based) ================= */
+  const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
-            text: "This parcel will be permanently deleted!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it",
-            cancelButtonText: "Cancel",
-            confirmButtonColor: "#e11d48", // red-600
-            cancelButtonColor: "#6b7280",  // gray-500
+      text: "This parcel will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#e11d48",
+      cancelButtonColor: "#6b7280",
     });
 
     if (result.isConfirmed) {
-      await axiosSecure.delete(`/parcels/${parcel._id}`);
+      await axiosSecure.delete(`/parcels/${id}`);
       Swal.fire("Deleted!", "Parcel has been deleted.", "success");
       refetch();
     }
@@ -147,7 +141,7 @@ const MyParcels = () => {
 
                     <td className="space-x-2">
                       <button
-                        onClick={() => handleView(parcel)}
+                        onClick={() => handleView(parcel._id)}
                         className="btn btn-xs btn-outline"
                       >
                         View
@@ -155,7 +149,7 @@ const MyParcels = () => {
 
                       {parcel.payment_status === "unpaid" && (
                         <button
-                          onClick={() => handlePay(parcel)}
+                          onClick={() => handlePay(parcel._id)}
                           className="btn btn-xs btn-primary text-black"
                         >
                           Pay
@@ -163,7 +157,7 @@ const MyParcels = () => {
                       )}
 
                       <button
-                        onClick={() => handleDelete(parcel)}
+                        onClick={() => handleDelete(parcel._id)}
                         className="btn btn-xs btn-error"
                       >
                         Delete
