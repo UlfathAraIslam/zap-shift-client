@@ -8,6 +8,7 @@ import Coverage from "../pages/Coverage/Coverage";
 import PrivateRoute from "../routes/PrivateRoute";
 import SendPercel from "../pages/SendPercel/SendPercel";
 import DashboardLayout from "../layouts/DashboardLayout";
+import MyParcels from "../pages/Dashboard/MyParcels/MyParcels";
 
 export const router = createBrowserRouter([
   {
@@ -57,7 +58,10 @@ export const router = createBrowserRouter([
       <DashboardLayout/>
     </PrivateRoute>,
     children: [
-      
+      {
+        path:'myParcels',
+        Component: MyParcels,
+      }
     ]
   }
 ]);
