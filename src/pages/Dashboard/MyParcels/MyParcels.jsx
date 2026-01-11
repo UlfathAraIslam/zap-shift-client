@@ -36,6 +36,7 @@ const MyParcels = () => {
     Swal.fire({
       title: "Parcel Details",
       html: `
+        <p><b>Title:</b> ${parcel.title}</p>
         <p><b>Tracking ID:</b> ${parcel.tracking_id}</p>
         <p><b>Sender:</b> ${parcel.sender_name}</p>
         <p><b>Receiver:</b> ${parcel.receiver_name}</p>
@@ -57,7 +58,6 @@ const MyParcels = () => {
     });
 
     if (result.isConfirmed) {
-      // later integrate Stripe
       await axiosSecure.patch(`/parcels/pay/${parcel._id}`);
       Swal.fire("Success", "Payment completed", "success");
       refetch();
@@ -68,10 +68,13 @@ const MyParcels = () => {
   const handleDelete = async (parcel) => {
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: "This parcel will be permanently deleted",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it",
+            text: "This parcel will be permanently deleted!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#e11d48", // red-600
+            cancelButtonColor: "#6b7280",  // gray-500
     });
 
     if (result.isConfirmed) {
@@ -95,6 +98,7 @@ const MyParcels = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Title</th>
                 <th>Type</th>
                 <th>Created At</th>
                 <th>Cost</th>
@@ -106,7 +110,7 @@ const MyParcels = () => {
             <tbody>
               {parcels.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center py-12 text-gray-500">
+                  <td colSpan="7" className="text-center py-12 text-gray-500">
                     No parcel found 🚚
                   </td>
                 </tr>
@@ -114,6 +118,10 @@ const MyParcels = () => {
                 parcels.map((parcel, index) => (
                   <tr key={parcel._id}>
                     <td>{index + 1}</td>
+
+                    <td className="font-medium">
+                      {parcel.title || "—"}
+                    </td>
 
                     <td className="capitalize">
                       {parcel.type === "document"

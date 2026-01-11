@@ -1,13 +1,14 @@
 import React from "react";
-import { Outlet } from "react-router";
+import { NavLink, Outlet } from "react-router";
+import ProfastLogo from "../pages/shared/ProfastLogo/ProfastLogo";
 
 const DashboardLayout = () => {
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col items-center justify-center">
+      <div className="drawer-content flex flex-col">
         {/* Navbar */}
-    <div className="navbar bg-base-300 w-full">
+    <div className="w-full">
       <div className="flex-none lg:hidden">
         <label htmlFor="my-drawer-2" aria-label="open sidebar" className="btn btn-square btn-ghost">
           <svg
@@ -39,11 +40,12 @@ const DashboardLayout = () => {
         ></label>
         <ul className="menu bg-base-200 min-h-full w-80 p-4">
           {/* Sidebar content here */}
+          <ProfastLogo/>
           <li>
-            <a>Sidebar Item 1</a>
+            <a>Home</a>
           </li>
           <li>
-            <a>Sidebar Item 2</a>
+            <NavLink to="/dashboard/myParcels">MyParcels</NavLink>
           </li>
         </ul>
       </div>
