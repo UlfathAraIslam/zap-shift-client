@@ -1,13 +1,15 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router";
 import ProfastLogo from "../pages/shared/ProfastLogo/ProfastLogo";
-import { FaHome, FaUserEdit, FaHistory } from "react-icons/fa";
+import { FaHome, FaUserEdit, FaHistory, FaUserClock, FaUserCheck } from "react-icons/fa";
 import { MdLocalShipping, MdTrackChanges } from "react-icons/md";
 
 const DashboardLayout = () => {
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+
+      {/* ================= Main Content ================= */}
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
         <div className="w-full">
@@ -28,25 +30,28 @@ const DashboardLayout = () => {
                   strokeLinejoin="round"
                   strokeWidth="2"
                   d="M4 6h16M4 12h16M4 18h16"
-                ></path>
+                />
               </svg>
             </label>
           </div>
           <div className="mx-2 flex-1 px-2 lg:hidden">Dashboard</div>
         </div>
-        {/* Page content here */}
-        <Outlet></Outlet>
-        {/* Page content here */}
+
+        {/* Page content */}
+        <Outlet />
       </div>
+
+      {/* ================= Sidebar ================= */}
       <div className="drawer-side">
         <label
           htmlFor="my-drawer-2"
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <ul className="menu bg-base-200 min-h-full w-80 p-4">
-          {/* Sidebar content here */}
+
+        <ul className="menu bg-base-200 min-h-full w-80 p-4 space-y-1">
           <ProfastLogo />
+
           <li>
             <NavLink to="/dashboard/home" className="flex items-center gap-3">
               <FaHome className="text-lg" />
@@ -78,6 +83,28 @@ const DashboardLayout = () => {
             <NavLink to="/dashboard/track" className="flex items-center gap-3">
               <MdTrackChanges className="text-lg" />
               Track a Package
+            </NavLink>
+          </li>
+
+          {/* ===== Riders Management ===== */}
+
+          <li>
+            <NavLink
+              to="/dashboard/pendingRiders"
+              className="flex items-center gap-3"
+            >
+              <FaUserClock className="text-lg" />
+              Pending Riders
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/dashboard/activeRiders"
+              className="flex items-center gap-3"
+            >
+              <FaUserCheck className="text-lg" />
+              Active Riders
             </NavLink>
           </li>
 
