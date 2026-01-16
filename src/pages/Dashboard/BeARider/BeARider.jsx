@@ -1,208 +1,181 @@
-import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-
-
+import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
+import Swal from "sweetalert2";
+import { useState } from "react";
+import { useLoaderData } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
+
+
 const BeARider = () => {
-  const { user } = useAuth();
-  const axiosSecure = useAxiosSecure();
+    const { user } = useAuth();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm();
 
-  const [serviceCenters, setServiceCenters] = useState([]);
-  const [regions, setRegions] = useState([]);
-  const [districts, setDistricts] = useState([]);
+    const [selectedRegion, setSelectedRegion] = useState("");
+    const axiosSecure = useAxiosSecure();
 
-  const [setSelectedRegion] = useState("");
+    const serviceCenters = useLoaderData();
 
-  /* ================= Load Service Centers ================= */
-  useEffect(() => {
-    axiosSecure.get("/serviceCenters").then((res) => {
-      setServiceCenters(res.data);
+    const regions = [...new Set(serviceCenters.map((s) => s.region))];
+    const districts = serviceCenters
+        .filter((s) => s.region === selectedRegion)
+        .map((s) => s.district);
 
-      const uniqueRegions = [
-        ...new Set(res.data.map((c) => c.region)),
-      ];
-      setRegions(uniqueRegions);
-    });
-  }, [axiosSecure]);
+    const onSubmit = async (data) => {
+        const riderData = {
+            ...data,
+            name: user?.displayName || "",
+            email: user?.email || "",
+            status: "pending",
+            created_at: new Date().toISOString(),
+        };
 
-  /* ================= Handle Region Change ================= */
-  const handleRegionChange = (region) => {
-    setSelectedRegion(region);
-    const filteredDistricts = serviceCenters
-      .filter((c) => c.region === region)
-      .map((c) => c.district);
+        console.log("Rider Application:", riderData);
 
-    setDistricts(filteredDistricts);
-  };
+        axiosSecure.post('/riders', riderData)
+            .then(res => {
+                if(res.data.insertedId){
+                    Swal.fire({
+                        icon: "success",
+                        title: "Application Submitted!",
+                        text: "Your application is pending approval.",
+                    });
+                }
+            })
 
-  /* ================= Submit Form ================= */
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.target;
 
-    const riderApplication = {
-      name: user?.displayName,
-      email: user?.email,
-      age: form.age.value,
-      region: form.region.value,
-      district: form.district.value,
-      phone: form.phone.value,
-      nid: form.nid.value,
-      bike_registration: form.bikeRegistration.value,
-      experience: form.experience.value,
-      status: "pending",
-      applied_at: new Date(),
+
+        // Send to your backend here
+        reset();
     };
 
-    try {
-      await axiosSecure.post("/riders", riderApplication);
+    return (
+        <div className="max-w-2xl mx-auto p-6 bg-base-100 rounded-xl shadow">
+            <h2 className="text-2xl font-bold mb-2">Become a Rider</h2>
+            <p className="text-gray-500 mb-6">Fill out the form to apply as a delivery rider.</p>
 
-      Swal.fire({
-        icon: "success",
-        title: "Application Submitted",
-        text: "Your rider application is under review",
-      });
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-1 gap-4">
+                    {/* Name (read-only) */}
+                    <input
+                        type="text"
+                        value={user?.displayName || ""}
+                        readOnly
+                        className="input input-bordered text-black w-full bg-gray-100"
+                    />
 
-      form.reset();
-    // eslint-disable-next-line no-unused-vars
-    } catch (err) {
-      Swal.fire("Error", "Failed to submit application", "error");
-    }
-  };
+                    {/* Email (read-only) */}
+                    <input
+                        type="email"
+                        value={user?.email || ""}
+                        readOnly
+                        className="input input-bordered text-black w-full bg-gray-100"
+                    />
 
-  return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-4xl font-bold mb-6 text-center">
-        Apply to Be a Rider
-      </h2>
+                    {/* Age */}
+                    <input
+                        type="number"
+                        placeholder="Your Age"
+                        className="input input-bordered w-full"
+                        {...register("age", { required: true, min: 18 })}
+                    />
+                    {errors.age && (
+                        <span className="text-red-500 text-sm">You must be 18 or older</span>
+                    )}
 
-      <form onSubmit={handleSubmit} className="card bg-base-100 shadow p-6 space-y-4">
+                    {/* Phone */}
+                    <input
+                        type="tel"
+                        placeholder="Phone Number"
+                        className="input input-bordered w-full"
+                        {...register("phone", { required: true })}
+                    />
+                    {errors.phone && (
+                        <span className="text-red-500 text-sm">Phone number is required</span>
+                    )}
 
-        {/* Name */}
-        <div>
-          <label className="label">Name</label>
-          <input
-            type="text"
-            readOnly
-            value={user?.displayName || ""}
-            className="input input-bordered w-full bg-base-200"
-          />
+                    {/* National ID */}
+                    <input
+                        type="text"
+                        placeholder="National ID Card Number"
+                        className="input input-bordered w-full"
+                        {...register("nid", { required: true })}
+                    />
+                    {errors.nid && (
+                        <span className="text-red-500 text-sm">NID is required</span>
+                    )}
+
+                    {/* Region */}
+                    <select
+                        className="select select-bordered w-full"
+                        {...register("region", { required: true })}
+                        onChange={(e) => setSelectedRegion(e.target.value)}
+                    >
+                        <option value="">Select Region</option>
+                        {regions.map((region, idx) => (
+                            <option key={idx} value={region}>
+                                {region}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.region && <span className="text-red-500 text-sm">Region is required</span>}
+
+                    {/* District */}
+                    <select
+                        className="select select-bordered w-full"
+                        {...register("district", { required: true })}
+                        disabled={!selectedRegion}
+                    >
+                        <option value="">Select District</option>
+                        {districts.map((district, idx) => (
+                            <option key={idx} value={district}>
+                                {district}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.district && <span className="text-red-500 text-sm">District is required</span>}
+
+                    {/* Bike Brand */}
+                    <input
+                        type="text"
+                        placeholder="Bike Brand (e.g., Yamaha FZ)"
+                        className="input input-bordered w-full"
+                        {...register("bike_brand", { required: true })}
+                    />
+                    {errors.bike_brand && (
+                        <span className="text-red-500 text-sm">Bike brand is required</span>
+                    )}
+
+                    {/* Bike Registration */}
+                    <input
+                        type="text"
+                        placeholder="Bike Registration Number"
+                        className="input input-bordered w-full"
+                        {...register("bike_registration", { required: true })}
+                    />
+                    {errors.bike_registration && (
+                        <span className="text-red-500 text-sm">Registration number is required</span>
+                    )}
+
+                    {/* Additional Info (optional) */}
+                    <textarea
+                        placeholder="Additional information (optional)"
+                        className="textarea textarea-bordered w-full"
+                        {...register("note")}
+                    ></textarea>
+                </div>
+
+                <button type="submit" className="btn btn-primary text-black w-full mt-4">
+                    Submit Rider Application
+                </button>
+            </form>
         </div>
-
-        {/* Email */}
-        <div>
-          <label className="label">Email</label>
-          <input
-            type="email"
-            readOnly
-            value={user?.email || ""}
-            className="input input-bordered w-full bg-base-200"
-          />
-        </div>
-
-        {/* Age */}
-        <div>
-          <label className="label">Age</label>
-          <input
-            type="number"
-            name="age"
-            required
-            min="18"
-            placeholder="Enter your age"
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        {/* Region */}
-        <div>
-          <label className="label">Region</label>
-          <select
-            name="region"
-            required
-            className="select select-bordered w-full"
-            onChange={(e) => handleRegionChange(e.target.value)}
-          >
-            <option value="">Select Region</option>
-            {regions.map((region, i) => (
-              <option key={i} value={region}>
-                {region}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* District */}
-        <div>
-          <label className="label">District</label>
-          <select
-            name="district"
-            required
-            className="select select-bordered w-full"
-          >
-            <option value="">Select District</option>
-            {districts.map((district, i) => (
-              <option key={i} value={district}>
-                {district}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Phone */}
-        <div>
-          <label className="label">Phone Number</label>
-          <input
-            type="tel"
-            name="phone"
-            required
-            placeholder="01XXXXXXXXX"
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        {/* NID */}
-        <div>
-          <label className="label">National ID Card Number</label>
-          <input
-            type="text"
-            name="nid"
-            required
-            placeholder="Enter NID number"
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        {/* Bike Registration */}
-        <div>
-          <label className="label">Bike Registration Number</label>
-          <input
-            type="text"
-            name="bikeRegistration"
-            required
-            placeholder="Bike registration number"
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        {/* Experience */}
-        <div>
-          <label className="label">Delivery Experience (optional)</label>
-          <textarea
-            name="experience"
-            placeholder="Previous delivery experience (if any)"
-            className="textarea textarea-bordered w-full"
-          ></textarea>
-        </div>
-
-        {/* Submit */}
-        <button type="submit" className="btn btn-primary w-full text-black">
-          Submit Application
-        </button>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default BeARider;

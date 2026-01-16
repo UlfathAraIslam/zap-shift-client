@@ -30,7 +30,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "beARider",
-        element: <PrivateRoute><BeARider></BeARider></PrivateRoute>
+        element: <PrivateRoute><BeARider></BeARider></PrivateRoute>,
+        loader: () => fetch("./serviceCenter.json"),
       },
       {
         path: "sendPercel",
