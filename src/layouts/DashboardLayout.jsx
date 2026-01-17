@@ -1,7 +1,14 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router";
 import ProfastLogo from "../pages/shared/ProfastLogo/ProfastLogo";
-import { FaHome, FaUserEdit, FaHistory, FaUserClock, FaUserCheck } from "react-icons/fa";
+import {
+  FaHome,
+  FaUserEdit,
+  FaHistory,
+  FaUserClock,
+  FaUserCheck,
+  FaUserShield,
+} from "react-icons/fa";
 import { MdLocalShipping, MdTrackChanges } from "react-icons/md";
 
 const DashboardLayout = () => {
@@ -115,6 +122,15 @@ const DashboardLayout = () => {
             >
               <FaUserEdit className="text-lg" />
               Update Profile
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/dashboard/makeAdmin"
+              className="flex items-center gap-3"
+            >
+              <FaUserShield className="text-lg" />
+              Make Admin
             </NavLink>
           </li>
         </ul>
