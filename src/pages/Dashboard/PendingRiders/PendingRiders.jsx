@@ -22,7 +22,7 @@ const PendingRiders = () => {
 
     const handleDecision = async (id, action) => {
         const confirm = await Swal.fire({
-            title: `${action === "approve" ? "Approve" : "Reject"} Application?`,
+            title: `${action === "approve" ? "active" : "Reject"} Application?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes",
