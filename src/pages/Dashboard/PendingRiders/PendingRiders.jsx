@@ -20,7 +20,7 @@ const PendingRiders = () => {
         return <p className="text-center">Loading...</p>;
     }
 
-    const handleDecision = async (id, action) => {
+    const handleDecision = async (id, action,email) => {
         const confirm = await Swal.fire({
             title: `${action === "approve" ? "active" : "Reject"} Application?`,
             icon: "warning",
@@ -32,8 +32,10 @@ const PendingRiders = () => {
         if (!confirm.isConfirmed) return;
 
         try {
-            await axiosSecure.patch(`/riders/${id}`, {
-                status: action === "approve" ? "active" : "rejected",
+            const status = action === "approve" ? "active" : "rejected";
+            await axiosSecure.patch(`/riders/${id}/status`, {
+                status,
+                email,
             });
 
             refetch();
@@ -88,7 +90,7 @@ const PendingRiders = () => {
                                     </button>
                                     <button
                                         onClick={() =>
-                                            handleDecision(rider._id, "approve")
+                                            handleDecision(rider._id, "approve",rider.email)
                                         }
                                         className="btn btn-sm btn-success"
                                     >
@@ -96,7 +98,7 @@ const PendingRiders = () => {
                                     </button>
                                     <button
                                         onClick={() =>
-                                            handleDecision(rider._id, "reject")
+                                            handleDecision(rider._id, "reject",rider.email)
                                         }
                                         className="btn btn-sm btn-error"
                                     >
