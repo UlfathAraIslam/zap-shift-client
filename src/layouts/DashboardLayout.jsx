@@ -10,8 +10,11 @@ import {
   FaUserShield,
 } from "react-icons/fa";
 import { MdLocalShipping, MdTrackChanges } from "react-icons/md";
+import useUserRole from "../hooks/useUserRole";
 
 const DashboardLayout = () => {
+  const { role, roleLoading } = useUserRole();
+  console.log(role);
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -93,9 +96,20 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
 
-          {/* ===== Riders Management ===== */}
-
           <li>
+            <NavLink
+              to="/dashboard/profile"
+              className="flex items-center gap-3"
+            >
+              <FaUserEdit className="text-lg" />
+              Update Profile
+            </NavLink>
+          </li>
+
+          {/* ===== Riders Management ===== */}
+          {!roleLoading && role === 'admin' &&
+            <>
+            <li>
             <NavLink
               to="/dashboard/pendingRiders"
               className="flex items-center gap-3"
@@ -114,16 +128,6 @@ const DashboardLayout = () => {
               Active Riders
             </NavLink>
           </li>
-
-          <li>
-            <NavLink
-              to="/dashboard/profile"
-              className="flex items-center gap-3"
-            >
-              <FaUserEdit className="text-lg" />
-              Update Profile
-            </NavLink>
-          </li>
           <li>
             <NavLink
               to="/dashboard/makeAdmin"
@@ -133,6 +137,8 @@ const DashboardLayout = () => {
               Make Admin
             </NavLink>
           </li>
+          </>
+          }
         </ul>
       </div>
     </div>
