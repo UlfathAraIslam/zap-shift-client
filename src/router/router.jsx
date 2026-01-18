@@ -16,6 +16,8 @@ import BeARider from "../pages/Dashboard/BeARider/BeARider";
 import PendingRiders from "../pages/Dashboard/PendingRiders/PendingRiders";
 import ActiveRiders from "../pages/Dashboard/ActiveRiders/ActiveRiders";
 import MakeAdmin from "../pages/Dashboard/MakeAdmin/MakeAdmin";
+import Forbidden from "../pages/Forbidden/Forbidden";
+import AdminRoute from "../routes/AdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -32,8 +34,16 @@ export const router = createBrowserRouter([
         loader: () => fetch("./serviceCenter.json"),
       },
       {
+        path: "forbidden",
+        Component: Forbidden,
+      },
+      {
         path: "beARider",
-        element: <PrivateRoute><BeARider></BeARider></PrivateRoute>,
+        element: (
+          <PrivateRoute>
+            <BeARider></BeARider>
+          </PrivateRoute>
+        ),
         loader: () => fetch("./serviceCenter.json"),
       },
       {
@@ -65,39 +75,41 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: '/dashboard',
-    element: <PrivateRoute>
-      <DashboardLayout/>
-    </PrivateRoute>,
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
-        path:'myParcels',
+        path: "myParcels",
         Component: MyParcels,
       },
       {
-        path: 'payment/:parcelId',
+        path: "payment/:parcelId",
         Component: Payment,
       },
       {
-        path:'paymentHistory',
+        path: "paymentHistory",
         Component: PaymentHistory,
       },
       {
-        path:'track',
+        path: "track",
         Component: TrackParcel,
       },
       {
-        path: 'pendingRiders',
-        Component: PendingRiders,
+        path: "pendingRiders",
+        element: <AdminRoute><PendingRiders/></AdminRoute>
       },
       {
-        path: 'activeRiders',
-        Component: ActiveRiders,
+        path: "activeRiders",
+        element: <AdminRoute><ActiveRiders/></AdminRoute>
       },
       {
-        path:'makeAdmin',
-        Component:MakeAdmin,
-      }
-    ]
-  }
+        path: "makeAdmin",
+        element: <AdminRoute><MakeAdmin/></AdminRoute>
+      },
+    ],
+  },
 ]);
