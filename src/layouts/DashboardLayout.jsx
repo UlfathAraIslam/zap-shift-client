@@ -8,6 +8,7 @@ import {
   FaUserClock,
   FaUserCheck,
   FaUserShield,
+  FaTruckMoving,
 } from "react-icons/fa";
 import { MdLocalShipping, MdTrackChanges } from "react-icons/md";
 import useUserRole from "../hooks/useUserRole";
@@ -107,38 +108,46 @@ const DashboardLayout = () => {
           </li>
 
           {/* ===== Riders Management ===== */}
-          {!roleLoading && role === 'admin' &&
+          {!roleLoading && role === "admin" && (
             <>
-            <li>
-            <NavLink
-              to="/dashboard/pendingRiders"
-              className="flex items-center gap-3"
-            >
-              <FaUserClock className="text-lg" />
-              Pending Riders
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="/dashboard/activeRiders"
-              className="flex items-center gap-3"
-            >
-              <FaUserCheck className="text-lg" />
-              Active Riders
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/dashboard/makeAdmin"
-              className="flex items-center gap-3"
-            >
-              <FaUserShield className="text-lg" />
-              Make Admin
-            </NavLink>
-          </li>
-          </>
-          }
+              <li>
+                <NavLink
+                  to="/dashboard/assignRider"
+                  className="flex items-center gap-3"
+                >
+                  <FaTruckMoving className="text-lg" />
+                  Assign Rider
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/dashboard/pendingRiders"
+                  className="flex items-center gap-3"
+                >
+                  <FaUserClock className="text-lg" />
+                  Pending Riders
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/dashboard/activeRiders"
+                  className="flex items-center gap-3"
+                >
+                  <FaUserCheck className="text-lg" />
+                  Active Riders
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/dashboard/makeAdmin"
+                  className="flex items-center gap-3"
+                >
+                  <FaUserShield className="text-lg" />
+                  Make Admin
+                </NavLink>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </div>
