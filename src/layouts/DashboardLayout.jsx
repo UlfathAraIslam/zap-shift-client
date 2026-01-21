@@ -9,6 +9,7 @@ import {
   FaUserCheck,
   FaUserShield,
   FaTruckMoving,
+  FaTasks
 } from "react-icons/fa";
 import { MdLocalShipping, MdTrackChanges } from "react-icons/md";
 import useUserRole from "../hooks/useUserRole";
@@ -107,7 +108,21 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
 
-          {/* ===== Riders Management ===== */}
+          {/* rider links */}
+          {!roleLoading && role === "rider" && (
+            <>
+              <li>
+                <NavLink
+                  to="/dashboard/pendingDeliveries"
+                  className="flex items-center gap-3"
+                >
+                  <FaTasks className="text-lg" />
+                  Pending Deliveries
+                </NavLink>
+              </li>
+            </>
+          )}
+          {/* admin links */}
           {!roleLoading && role === "admin" && (
             <>
               <li>
