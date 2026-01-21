@@ -9,7 +9,8 @@ import {
   FaUserCheck,
   FaUserShield,
   FaTruckMoving,
-  FaTasks
+  FaTasks,
+  FaCheckCircle,
 } from "react-icons/fa";
 import { MdLocalShipping, MdTrackChanges } from "react-icons/md";
 import useUserRole from "../hooks/useUserRole";
@@ -118,6 +119,15 @@ const DashboardLayout = () => {
                 >
                   <FaTasks className="text-lg" />
                   Pending Deliveries
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/dashboard/completedDeliveries"
+                  className="flex items-center gap-3"
+                >
+                  <FaCheckCircle className="text-lg" />
+                  Completed Deliveries
                 </NavLink>
               </li>
             </>
